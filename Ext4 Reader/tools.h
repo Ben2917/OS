@@ -9,10 +9,10 @@
 #define TOOLS_BIG_ENDIAN 0
 #define TOOLS_LITTLE_ENDIAN 1
 
-uint16_t attribToUint16(unsigned char *);
+#define UINT16_WIDTH 2
+#define UINT32_WIDTH 4
+#define UINT64_WIDTH 8
 
-uint32_t attribToUint32(unsigned char *);
-
-uint64_t attribToUint64(unsigned char *);
+uint64_t attribToUint(unsigned char *, const int width);
 
 #endif // TOOLS_H_

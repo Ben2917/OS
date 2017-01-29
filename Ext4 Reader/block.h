@@ -10,14 +10,14 @@
 #define IMAGE_NAME "images/ext4.img"
 
 typedef struct {
-    unsigned char data[BLOCK_SIZE];
+    unsigned char *data; // FIX ME: Data should not be fixed size
 } BLOCK;
 
 /**
 * @param The number of the block on disk.
 * @return NULL for error opening file, else valid block.
 **/
-BLOCK *loadBlock(int); 
+BLOCK *loadBlock(int, int); 
 
 /**
 * @param The block to get the attribute from.

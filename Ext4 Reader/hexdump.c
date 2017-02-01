@@ -6,7 +6,7 @@
 
 #define LINESIZE 16
 
-void dumpHexBytes(char *bytes, int numBytes) {
+void dumpHexBytes(unsigned char *bytes, int numBytes) {
     for(int i = 0; i < numBytes; ++i) {
         printf("%02hhX ", bytes[i]);
         if(!((i + 1) % LINESIZE)) 

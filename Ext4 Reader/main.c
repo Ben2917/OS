@@ -8,24 +8,44 @@
 #include "groupdescriptor.h"
 #include "tools.h"
 
+// NOTE: looks like could have 4k block size
+
+// NOTE: need to get s_desc_size field from superblock
+
 int main() {
-    BLOCK *superblock = loadBlock(1, BLOCK_SIZE), 
-        *groupDescriptor = loadBlock(4, GROUP_DESCRIPTOR_SIZE);    
-    dumpHexBytes(superblock->data, BLOCK_SIZE);
-    dumpHexBytes(groupDescriptor->data, GROUP_DESCRIPTOR_SIZE);
-    printf("***************************************************************\n");
-    if(superblock == NULL || groupDescriptor == NULL)
+    
+    BLOCK superblock = loadBlock(1, SUPERBLOCK_SIZE);    
+    if(!superblock)
        return -1;
-    if(superblock->data == NULL || groupDescriptor->data == NULL)
-        return -2;
-    unsigned char *totalInodes = getAttribute(superblock, 0x0, 0x04);
-    dumpHexBytes(totalInodes, 0x04);
-    printf("Total Inodes: %u\n", (uint32_t)attribToUint(totalInodes, UINT32_WIDTH));
-     uint64_t inodeTableLoc = attribToUint(getAttribute(groupDescriptor, 
-        BG_INODE_TABLE_LO_OFFSET, BG_INODE_TABLE_LO_LENGTH), UINT32_WIDTH);
-    inodeTableLoc |= (attribToUint(getAttribute(groupDescriptor, 
-        BG_INODE_TABLE_HI_OFFSET, BG_INODE_TABLE_HI_LENGTH), UINT32_WIDTH) << 32);
-    printf("Inode table location: %lu\n", inodeTableLoc);
-    // NOTE: Be sure to free all of the blocks here.
+    uint32_t featureIncompat = (uint32_t)attribToUint(getAttribute(superblock, 
+		S_FEATURE_INCOMPAT_OFFSET, S_FEATURE_INCOMPAT_LENGTH), S_FEATURE_INCOMPAT_LENGTH);
+	if(!(featureIncompat & 0x80)) // TODO: 64 bit support
+		printf("64 bit incompatible.\n");
+    
+    // Blocks per group * block size
+    uint32_t blockSize = (uint32_t)attribToUint(getAttribute(superblock,
+		S_LOG_BLOCK_SIZE_OFFSET, S_LOG_BLOCK_SIZE_LENGTH), S_LOG_BLOCK_SIZE_LENGTH);
+	
+	printf("Block size: %u\n", blockSize);
+	
+	// blockSize = (uint32_t)pow(2, 10 + blockSize);
+	
+	uint32_t blocksPerGroup = (uint32_t)attribToUint(getAttribute(superblock, 
+		S_BLOCKS_PER_GROUP_OFFSET, S_BLOCKS_PER_GROUP_LENGTH), S_BLOCKS_PER_GROUP_LENGTH);
+	
+	printf("Group size %u\n", blocksPerGroup * BLOCK_SIZE);
+   
+    // Should be group descriptor for bg 1
+    GROUP_DESCRIPTOR gd = loadBlock(2, BG_GROUP_DESCRIPTOR_SIZE);
+    if(!gd)
+		return -2;
+    dumpHexBytes(gd, BG_GROUP_DESCRIPTOR_SIZE);
+    
+    uint32_t inodeTableLo = (uint32_t)attribToUint(getAttribute(gd, 
+		BG_INODE_TABLE_LO_OFFSET, BG_INODE_TABLE_LO_LENGTH), BG_INODE_TABLE_LO_LENGTH);
+	printf("Inode bitmap lo: %u\n", inodeTableLo);
+	
+    free(superblock);
+    free(gd);
     return 0;
 }

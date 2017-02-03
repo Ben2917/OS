@@ -80,4 +80,9 @@
 #define BG_RESERVED_OFFSET 0x3C
 #define BG_RESERVED_LENGTH 0x04
 
+/**
+* @param The block group number to get the group descriptor for.
+* **/
+BLOCK initGroupdescriptor(const int);
+
 #endif // GROUP_DESCRIPTOR_H_

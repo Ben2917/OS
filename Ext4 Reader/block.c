@@ -10,7 +10,7 @@ BLOCK loadBlock(const int offset, const int size) {
     if(!handle) {
       return NULL;
     } // May get 1 byte too little. See man.
-    fseek(handle, offset * BLOCK_SIZE, SEEK_SET);
+    fseek(handle, offset, SEEK_SET); // Normalise for padding?
     fgets(block, size + 1, handle);
     fclose(handle);
     return block;

@@ -4,12 +4,14 @@
 #define SUPERBLOCK_H_
 
 #include "block.h"
+#include "tools.h"
 
-/**
-* Macros to get the attributes of the superblock to be defined here.
-**/
+/* General superblock macros. */
 
 #define SUPERBLOCK_SIZE 1024
+#define EXPECTED_MAGIC_NUMBER 0xEF53
+
+/* Superblock attribute macros */
 
 #define S_INODE_COUNT_OFFSET 0x0
 #define S_INODE_COUNT_LENGTH 0x4
@@ -38,5 +40,7 @@
 // if the 64bit incompat flag is enabled
 #define S_GROUP_DESCRIPTOR_SIZE_OFFSET 0xFE 
 #define S_GROUP_DESCRIPTOR_SIZE_LENGTH 0x02
+
+BLOCK initSuperblock();
 
 #endif // SUPERBLOCK_H_

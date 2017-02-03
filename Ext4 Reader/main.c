@@ -6,6 +6,7 @@
 #include "hexdump.h"
 #include "superblock.h"
 #include "groupdescriptor.h"
+#include "inode.h"
 #include "tools.h"
 
 // NOTE: looks like could have 4k block size
@@ -45,11 +46,15 @@ int main() {
 		BG_INODE_TABLE_LO_OFFSET, BG_INODE_TABLE_LO_LENGTH), BG_INODE_TABLE_LO_LENGTH);
 	printf("Inode table lo: %u\n", inodeTableLo);
 	
-	unsigned char *inodeTable = loadBlock(inodeTableLo, BLOCK_SIZE);
+	INODE inodeTwo = loadBlock(inodeTableLo + 2 * INODE_SIZE, INODE_SIZE);
 	
-	dumpHexBytes(inodeTable, BLOCK_SIZE);
+	dumpHexBytes(inodeTwo, INODE_SIZE);
+	
+	// Parse contents of inode two here.
+	
 	
     free(superblock);
     free(gd);
+    free(inodeTwo);
     return 0;
 }

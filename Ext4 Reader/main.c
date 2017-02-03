@@ -34,16 +34,20 @@ int main() {
 		S_BLOCKS_PER_GROUP_OFFSET, S_BLOCKS_PER_GROUP_LENGTH), S_BLOCKS_PER_GROUP_LENGTH);
 	
 	printf("Group size %u\n", blocksPerGroup * BLOCK_SIZE);
-   
+	
     // Should be group descriptor for bg 1
-    GROUP_DESCRIPTOR gd = loadBlock(2, BG_GROUP_DESCRIPTOR_SIZE);
+    GROUP_DESCRIPTOR gd = loadBlock(1, BG_GROUP_DESCRIPTOR_SIZE);
     if(!gd)
 		return -2;
     dumpHexBytes(gd, BG_GROUP_DESCRIPTOR_SIZE);
     
     uint32_t inodeTableLo = (uint32_t)attribToUint(getAttribute(gd, 
 		BG_INODE_TABLE_LO_OFFSET, BG_INODE_TABLE_LO_LENGTH), BG_INODE_TABLE_LO_LENGTH);
-	printf("Inode bitmap lo: %u\n", inodeTableLo);
+	printf("Inode table lo: %u\n", inodeTableLo);
+	
+	unsigned char *inodeTable = loadBlock(inodeTableLo, BLOCK_SIZE);
+	
+	dumpHexBytes(inodeTable, BLOCK_SIZE);
 	
     free(superblock);
     free(gd);

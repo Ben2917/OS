@@ -11,7 +11,7 @@ BLOCK loadBlock(const int offset, const int size) {
       return NULL;
     } // May get 1 byte too little. See man.
     fseek(handle, offset * BLOCK_SIZE, SEEK_SET);
-    fgets(block, size, handle);
+    fgets(block, size + 1, handle);
     fclose(handle);
     return block;
 }

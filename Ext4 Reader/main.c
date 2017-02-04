@@ -9,6 +9,8 @@
 #include "inode.h"
 #include "tools.h"
 
+// TODO: test with ext2 image to check backwards compatibility
+
 int main() {
     
     BLOCK sb = initSuperblock();
@@ -20,7 +22,8 @@ int main() {
 		BG_INODE_TABLE_LO_OFFSET, BG_INODE_TABLE_LO_LENGTH), BG_INODE_TABLE_LO_LENGTH);
     printf("Inode table lo: %u\n", inodeTableLo);
 	
-	INODE inodeTwo = loadBlock(inodeTableLo * BLOCK_SIZE + 2 * INODE_SIZE, INODE_SIZE);
+    // Inode numbers start at 1?
+	INODE inodeTwo = initInode(inodeTableLo * BLOCK_SIZE + 1 * INODE_SIZE);
 	
 	dumpHexBytes(inodeTwo, INODE_SIZE);
 	
@@ -29,6 +32,8 @@ int main() {
 		
 	uint32_t dataBlockZero = (uint32_t)attribToUint(getAttribute(inodeTwo, 
 		I_BLOCK_OFFSET, UINT32_WIDTH), UINT32_WIDTH);
+
+    // Need to figure out how to build extent tree from these data blocks.
 		
 	printf("Data Block 0: %u\n", dataBlockZero);
 	
@@ -36,7 +41,7 @@ int main() {
 	
 	dumpHexBytes(test, BLOCK_SIZE);
 		
-    free(superblock);
+    free(sb);
     free(gd);
     free(inodeTwo);
     free(test);

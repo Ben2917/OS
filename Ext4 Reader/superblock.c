@@ -9,7 +9,7 @@ BLOCK initSuperblock() {
         uint32_t magicNumber = (uint32_t)attribToUint(getAttribute(sb, S_MAGIC_NUMBER_OFFSET, 
             S_MAGIC_NUMBER_LENGTH), S_MAGIC_NUMBER_LENGTH);
         if(magicNumber == EXPECTED_MAGIC_NUMBER) {
-            // Perform checksum.
+            // Perform checksum (if 64 bit).
             uint32_t featureIncompat = (uint32_t)attribToUint(getAttribute(sb, 
         		S_FEATURE_INCOMPAT_OFFSET, S_FEATURE_INCOMPAT_LENGTH), S_FEATURE_INCOMPAT_LENGTH);
         	if(!(featureIncompat & 0x80)) // TODO: 64 bit support

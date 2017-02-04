@@ -34,11 +34,13 @@
 #define S_FEATURE_INCOMPAT_OFFSET 0x60
 #define S_FEATURE_INCOMPAT_LENGTH 0x04
 
+#define S_UUID_OFFSET 0x68
+#define S_UUID_LENGTH 0x10 // NOTE: Used in group descriptor checksum.
+
 #define S_VOLUME_NAME_OFFSET 0x78
 #define S_VOLUME_NAME_LENGTH 0x10
 
-// if the 64bit incompat flag is enabled
-#define S_GROUP_DESCRIPTOR_SIZE_OFFSET 0xFE 
+#define S_GROUP_DESCRIPTOR_SIZE_OFFSET 0xFE // NOTE: If the 64bit incompat flag is enabled.
 #define S_GROUP_DESCRIPTOR_SIZE_LENGTH 0x02
 
 BLOCK initSuperblock();

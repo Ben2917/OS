@@ -8,8 +8,7 @@
 
 #include "checksums.h"
 
-#define BLOCK_SIZE 4096
-#define IMAGE_NAME "images/ext4.img"
+#define IMAGE_NAME "images/ext2"
 
 #define BLOCK unsigned char *
 

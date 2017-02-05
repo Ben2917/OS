@@ -3,6 +3,8 @@
 #ifndef GROUP_DESCRIPTOR_H_
 #define GROUP_DESCRIPTOR_H_
 
+#include <stdint.h>
+
 #include "block.h"
 
 #define GROUP_DESCRIPTOR unsigned char *
@@ -83,6 +85,6 @@
 /**
 * @param The block group number to get the group descriptor for.
 * **/
-BLOCK initGroupdescriptor(const int);
+BLOCK initGroupdescriptor(const int, const uint32_t);
 
 #endif // GROUP_DESCRIPTOR_H_

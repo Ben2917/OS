@@ -9,6 +9,7 @@
 #include "groupdescriptor.h"
 #include "inode.h"
 #include "tools.h"
+#include "extfile.h"
 
 // TODO: test with ext2 image to check backwards compatibility
 
@@ -52,16 +53,21 @@ int main(int argc, char **argv) {
     // Need to figure out how to build extent tree from these data blocks.
 		
 	printf("Data Block 0: %u\n", dataBlockZero);
+    printf("Byte offset: %u\n", dataBlockZero * blockSize);
+    printf("And casted.. : %d\n", dataBlockZero * blockSize);
 	
-	BLOCK root = loadBlock(dataBlockZero * blockSize, blockSize);
+	BLOCK rawRoot = loadBlock(dataBlockZero * blockSize, blockSize);
 	
-	dumpHexBytes(root, blockSize);
+	dumpHexBytes(rawRoot, blockSize);
+    
+    EXT_FILE *root = initDirectory(rawRoot, blockSize);
+    //ls(root);
     
     // Use the raw root data to build a file struct up
     
     free(sb);
     free(gd);
     free(inodeTwo);
-    free(test);
+    free(root);
     return 0;
 }

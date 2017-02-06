@@ -1,7 +1,6 @@
 
 
 #include "block.h"
-
 #include "hexdump.h"
 
 BLOCK loadBlock(const int offset, const int size) {
@@ -10,8 +9,11 @@ BLOCK loadBlock(const int offset, const int size) {
     if(!handle) {
       return NULL;
     } // May get 1 byte too little. See man.
-    fseek(handle, offset, SEEK_SET); // Normalise for padding?
-    fgets(block, size + 1, handle);
+    fseek(handle, offset, SEEK_SET);
+    for(int i = 0; i < size; i++) {
+        fseek(handle, offset + i, SEEK_SET);
+        block[i] = fgetc(handle);
+    }
     fclose(handle);
     return block;
 }

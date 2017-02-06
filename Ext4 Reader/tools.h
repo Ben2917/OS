@@ -9,6 +9,7 @@
 #define TOOLS_BIG_ENDIAN 0
 #define TOOLS_LITTLE_ENDIAN 1
 
+#define UINT8_WIDTH  1
 #define UINT16_WIDTH 2
 #define UINT32_WIDTH 4
 #define UINT64_WIDTH 8

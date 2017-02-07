@@ -5,17 +5,18 @@
 #include <math.h>
 
 #include "hexdump.h"
-#include "superblock.h"
-#include "groupdescriptor.h"
-#include "inode.h"
+#include "block.h"
 #include "tools.h"
 #include "extfile.h"
 
-// TODO: test with ext2 image to check backwards compatibility
-
 int main(int argc, char **argv) {
-    
-    BLOCK sb = initSuperblock();
+
+    if(argc != 2) {
+        printf("Invalid command line arguments. Please use \"filereader <image name>\"\n");
+        return -1;
+    } 
+
+    BLOCK sb = initSuperblock(argv[1]);
     
     uint32_t blockSize = (uint32_t)attribToUint(getAttribute(sb, S_LOG_BLOCK_SIZE_OFFSET, 
         S_LOG_BLOCK_SIZE_LENGTH), S_LOG_BLOCK_SIZE_LENGTH);
@@ -27,47 +28,34 @@ int main(int argc, char **argv) {
         
     printf("Block Size: %u\nInode Size: %u\n", blockSize, inodeSize);
 
-    // TODO: Focus on superblock reading to accurately set up the environment
-    // for the given image.
-	
-    // Should be group descriptor for bg 0
-    BLOCK gd = initGroupdescriptor(0, blockSize);
-    
-    dumpHexBytes(gd, BG_GROUP_DESCRIPTOR_SIZE);
+    BLOCK gd = initGroupdescriptor(argv[1], 0, blockSize);
     
     uint32_t inodeTableLo = (uint32_t)attribToUint(getAttribute(gd, 
 		BG_INODE_TABLE_LO_OFFSET, BG_INODE_TABLE_LO_LENGTH), BG_INODE_TABLE_LO_LENGTH);
     printf("Inode table lo: %u\n", inodeTableLo);
 	    
-    // Inode numbers start at 1?
-	INODE inodeTwo = initInode(inodeTableLo * blockSize + 1 * inodeSize);
-	
-	dumpHexBytes(inodeTwo, inodeSize);
-	
-	printf ("Data Blocks?\n");
-	dumpHexBytes(getAttribute(inodeTwo, I_BLOCK_OFFSET, I_BLOCK_LENGTH), I_BLOCK_LENGTH);
-		
-	uint32_t dataBlockZero = (uint32_t)attribToUint(getAttribute(inodeTwo, 
-		I_BLOCK_OFFSET, UINT32_WIDTH), UINT32_WIDTH);
-
-    // Need to figure out how to build extent tree from these data blocks.
-		
-	printf("Data Block 0: %u\n", dataBlockZero);
-    printf("Byte offset: %u\n", dataBlockZero * blockSize);
-    printf("And casted.. : %d\n", dataBlockZero * blockSize);
-	
-	BLOCK rawRoot = loadBlock(dataBlockZero * blockSize, blockSize);
-	
-	dumpHexBytes(rawRoot, blockSize);
+    INODE inodeTwo = initInode(argv[1], inodeTableLo * blockSize + 1 * inodeSize);
     
-    EXT_FILE *root = initDirectory(rawRoot, blockSize);
-    //ls(root);
+    BLOCK inodeTwoData = getAttribute(inodeTwo, I_BLOCK_OFFSET, I_BLOCK_LENGTH);
     
-    // Use the raw root data to build a file struct up
+    if(!magicNumberPresent(inodeTwoData)) {
+        uint32_t dataBlockZero = (uint32_t)attribToUint(getAttribute(inodeTwo, 
+            I_BLOCK_OFFSET, UINT32_WIDTH), UINT32_WIDTH);
+            
+        BLOCK rawRoot = loadBlock(argv[1], dataBlockZero * blockSize, blockSize);
+        
+        EXT_FILE *root = initLinearDirectory(rawRoot, blockSize);
+        ls(root);
+        
+        free(rawRoot);
+        free(root);
+    }
+    else { // Handle extent tree stuff
+        
+    }
     
     free(sb);
     free(gd);
     free(inodeTwo);
-    free(root);
     return 0;
 }

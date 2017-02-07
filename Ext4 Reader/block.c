@@ -3,9 +3,9 @@
 #include "block.h"
 #include "hexdump.h"
 
-BLOCK loadBlock(const int offset, const int size) {
+BLOCK loadBlock(char *imageName, const int offset, const int size) {
     BLOCK block = malloc(sizeof(unsigned char) * size);
-    FILE *handle = fopen(IMAGE_NAME, "r");
+    FILE *handle = fopen(imageName, "r");
     if(!handle) {
       return NULL;
     } // May get 1 byte too little. See man.

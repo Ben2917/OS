@@ -1,9 +1,9 @@
 
 
-#include "inode.h"
+#include "block.h"
 
-BLOCK initInode(const int offset) {
-    BLOCK in = loadBlock(offset, INODE_SIZE);
+BLOCK initInode(char *imageName, const int offset) {
+    BLOCK in = loadBlock(imageName, offset, INODE_SIZE);
     if(in) {
         uint16_t iMode = attribToUint(getAttribute(in, I_MODE_OFFSET, I_MODE_LENGTH), I_MODE_LENGTH);
         printf("%c", (iMode &= S_IROTH) ? 'r' : '-');

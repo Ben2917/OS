@@ -1,9 +1,9 @@
 
 
-#include "superblock.h"
+#include "block.h"
 
-BLOCK initSuperblock() {
-    BLOCK sb = loadBlock(1024, SUPERBLOCK_SIZE);
+BLOCK initSuperblock(char *imageName) {
+    BLOCK sb = loadBlock(imageName, 1024, SUPERBLOCK_SIZE);
     if(sb) {
         // Successfully got data. Make sure it's correct
         uint32_t magicNumber = (uint32_t)attribToUint(getAttribute(sb, S_MAGIC_NUMBER_OFFSET, 

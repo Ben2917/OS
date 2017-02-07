@@ -1,16 +1,16 @@
 
 
-#include "groupdescriptor.h"
+#include "block.h"
 
-BLOCK initGroupdescriptor(const int num, const uint32_t blockSize) {
+BLOCK initGroupdescriptor(char *imageName, const int num, const uint32_t blockSize) {
     BLOCK gd;
     if(blockSize > 1024) {
-        gd = loadBlock(1 * blockSize + num * BG_GROUP_DESCRIPTOR_SIZE, 
+        gd = loadBlock(imageName, 1 * blockSize + num * BG_GROUP_DESCRIPTOR_SIZE, 
             BG_GROUP_DESCRIPTOR_SIZE);
     }
     else {
         // Jump over the padding + superblock
-        gd = loadBlock(2048 + num * BG_GROUP_DESCRIPTOR_SIZE, 
+        gd = loadBlock(imageName, 2048 + num * BG_GROUP_DESCRIPTOR_SIZE, 
             BG_GROUP_DESCRIPTOR_SIZE);
     }
     if(gd) {

@@ -51,7 +51,11 @@ int main(int argc, char **argv) {
         free(root);
     }
     else { // Handle extent tree stuff
-        
+        // build extent tree header.
+          EXT_EH *header = initHeader(inodeTwoData);
+        printf("Header values:\nMagic Num: %u\nEntries: %u\nMax: %u\nDepth: %u\nGen: %u\n",
+            header->magic, header->entries, header->max, header->depth, header->generation);
+        // build whatever comes after it.
     }
     
     free(sb);

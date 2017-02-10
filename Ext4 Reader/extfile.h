@@ -67,6 +67,14 @@ void ls(EXT_FILE *);
 #define EH_GENERATION_OFFSET 0x08
 #define EH_GENERATION_LENGTH 0x04
 
+typedef struct {
+    uint16_t magic;
+    uint16_t entries;
+    uint16_t max;
+    uint16_t depth;
+    uint32_t generation;
+} EXT_EH; // Ext extent header
+
 /**
  * Determines whether the extent tree magic number is present. 
  * Potential bug if data block 0 of the linear blocks happens to be the same as the magic num.
@@ -74,5 +82,12 @@ void ls(EXT_FILE *);
  * @return TRUE if present, else FALSE.
  * **/
 int magicNumberPresent(BLOCK);
+
+/**
+ * @param Raw data to build the header from.
+ * @param Size of the raw data block.
+ * @return A new header or NULL if an error ocurred.
+ * **/
+EXT_EH *initHeader(BLOCK);
 
 #endif // EXT_FILE_H_

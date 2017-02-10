@@ -41,5 +41,27 @@ void ls(EXT_FILE *file) {
 }
 
 int magicNumberPresent(BLOCK data) {
-    return ((uint16_t)attribToUint(getAttribute(data, EH_MAGIC_OFFSET, EH_MAGIC_LENGTH), EH_MAGIC_LENGTH) == EXTENT_MAGIC_NUM);
+    return ((uint16_t)attribToUint(getAttribute(data, EH_MAGIC_OFFSET, 
+        EH_MAGIC_LENGTH), EH_MAGIC_LENGTH) == EXTENT_MAGIC_NUM);
+}
+
+EXT_EH *initHeader(BLOCK data) {
+    EXT_EH *eh = malloc(sizeof(EXT_EH));
+    if(eh) {
+        eh->magic = (uint16_t)attribToUint(getAttribute(data, EH_MAGIC_OFFSET,
+            EH_MAGIC_LENGTH), EH_MAGIC_LENGTH);
+        eh->entries = (uint16_t)attribToUint(getAttribute(data, EH_ENTRIES_OFFSET,
+            EH_ENTRIES_LENGTH), EH_ENTRIES_LENGTH);
+        eh->max = (uint16_t)attribToUint(getAttribute(data, EH_MAX_OFFSET,
+            EH_MAX_LENGTH), EH_MAX_LENGTH);
+        eh->depth = (uint16_t)attribToUint(getAttribute(data, EH_DEPTH_OFFSET,
+            EH_DEPTH_LENGTH), EH_DEPTH_LENGTH);
+        eh->generation = (uint32_t)attribToUint(getAttribute(data, EH_GENERATION_OFFSET,
+            EH_GENERATION_LENGTH), EH_GENERATION_LENGTH);
+        return eh;
+    }
+    else {
+        // Set global error message.
+        return NULL;
+    }
 }
